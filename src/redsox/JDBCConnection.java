@@ -19,7 +19,7 @@ import java.util.Scanner;
 import java.util.*;
 public class JDBCConnection {
 
-	
+	//quick test
   
   public static final int SQLSERVER = 1;
   public static final int MYSQLLOCAL = 2;
