@@ -20,7 +20,6 @@
       </RadioButton>
       <RadioButton id="sortUser" fx:id="sortUser" layoutX="82.0" layoutY="313.0" mnemonicParsing="false" text="User" toggleGroup="$sorting" />
       <RadioButton fx:id="sortDate" layoutX="139.0" layoutY="313.0" mnemonicParsing="false" text="Date" toggleGroup="$sorting" />
-      <TextArea fx:id="messagesPrintBox" layoutX="16.0" layoutY="340.0" prefHeight="308.0" prefWidth="200.0" />
       <Label layoutX="14.0" layoutY="283.0" text="Sort by:" />
       <Accordion layoutX="232.0" layoutY="291.0" prefHeight="357.0" prefWidth="354.0">
         <panes>
@@ -65,7 +64,10 @@
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
                         <Button layoutX="123.0" layoutY="239.0" mnemonicParsing="false" onAction="#newMessageSubmit" text="Post Message" />
-                        <TextArea fx:id="newMessage" layoutX="7.0" layoutY="6.0" prefHeight="219.0" prefWidth="338.0" />
+                        <TextArea fx:id="newMessage" layoutX="7.0" layoutY="62.0" prefHeight="163.0" prefWidth="338.0" />
+                        <Label layoutX="7.0" layoutY="14.0" text="Topic:" />
+                        <TextField fx:id="topic" layoutX="53.0" layoutY="9.0" />
+                        <Label layoutX="7.0" layoutY="45.0" text="Message:" />
                      </children>
                   </AnchorPane>
             </content>
@@ -97,12 +99,17 @@
       <Label layoutX="307.0" layoutY="189.0" text="Last Name:" />
       <TextField fx:id="firstName" layoutX="391.0" layoutY="154.0" />
       <TextField fx:id="lastName" layoutX="391.0" layoutY="184.0" />
-      <Button layoutX="391.0" layoutY="222.0" mnemonicParsing="false" text="Register User" />
+      <Button layoutX="391.0" layoutY="222.0" mnemonicParsing="false" onAction="#registerUser" text="Register User" />
       <Label layoutX="198.0" layoutY="249.0" text="Messaging App:">
          <font>
             <Font name="System Bold" size="27.0" />
          </font>
       </Label>
       <Button layoutX="79.0" layoutY="278.0" mnemonicParsing="false" onAction="#refresh" text="refresh" />
+      <ScrollPane fx:id="sp" layoutX="10.0" layoutY="336.0" prefHeight="316.0" prefWidth="219.0">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="341.0" prefWidth="217.0" />
+        </content>
+      </ScrollPane>
    </children>
 </AnchorPane>

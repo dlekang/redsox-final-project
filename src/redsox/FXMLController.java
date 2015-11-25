@@ -21,9 +21,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 
 /**
  * FXML Controller class
@@ -45,8 +48,6 @@ public class FXMLController implements Initializable {
     private RadioButton sortTopic;
     @FXML
     private RadioButton sortUser;
-    @FXML
-    private TextArea messagesPrintBox;
     @FXML
     private TextField messageNumberReply;
     @FXML
@@ -80,6 +81,13 @@ public class FXMLController implements Initializable {
             
    Connection con =null;
    int currentUser = 0;
+   
+    @FXML
+    private ScrollPane sp;
+    @FXML
+    private TextField topic;
+   
+   
     
     /**
      * Initializes the controller class.
@@ -105,10 +113,9 @@ public class FXMLController implements Initializable {
 
     @FXML
     private void replySubmit(ActionEvent event) {
-         int topicName;
-        System.out.println("Enter message ID for reply: ");
-       
-        topicName = 0; //fixthis
+         int messID;
+        
+        messID = Integer.valueOf(messageNumberReply.getText()); //fixthis
         
         String thread = ""; 
         
@@ -121,16 +128,16 @@ public class FXMLController implements Initializable {
              
         do{
                 
-        System.out.println("Enter your reply: ");
         
-        thread = "Fix this";  //fixthis
+        
+        thread = reply.getText();  //fixthis
         
         
                 if(thread.length()>301){
-                    System.err.println("\n\nMessage body must be less than 300 characters\n\n");
+                    alertLabel.setText("\n\nMessage body must be less than 300 characters\n\n");
                 }else{
-                    
-                query = "call replying('" + topicName + "','" + thread + "'," + currentUser + ")";
+                alertLabel.setText("Reply Added");    
+                query = "call replying('" + messID + "','" + thread + "'," + currentUser + ")";
                 
                 }
                 
@@ -162,7 +169,7 @@ public class FXMLController implements Initializable {
     private void deleteSubmit(ActionEvent event) {
         System.out.println("Enter message ID for deletion: ");
         
-        int topicName = 0; //fixthis
+        int topicName = Integer.valueOf(messageDelete.getText()); //fixthis
          
         Statement stmt = null;
         ResultSet rs = null;
@@ -185,14 +192,14 @@ public class FXMLController implements Initializable {
  
                         
 			if (rs.next()){
-                            System.out.println("test");
+                            
                             System.out.println(rs.getInt("userID"));
                             if(rs.getInt("userID") == currentUser){
                             preparedStmt.execute();
-                            System.out.println("Message Deleted");
+                            alertLabel.setText("Message Deleted");
                             }else{
-                            System.out.println("\n\nYou do not have permission to delete this message.\n\n");
-                        }
+                            alertLabel.setText("You do not have permission to delete this message.");
+                            }
                         }
                             
                             
@@ -220,19 +227,17 @@ public class FXMLController implements Initializable {
     private void ratingSubmit(ActionEvent event) {
         System.out.println("Enter message ID for rating: ");
         
-        int topicName = 0; //fixthis
-        int i = 0;
+        int topicName = Integer.valueOf(messageRating.getText()); 
+       
         Statement stmt = null;
 	ResultSet rs = null;
         String query ="";
       
+        RadioButton lc = (RadioButton) ratings.getSelectedToggle();
+        int enterRating = Integer.valueOf(lc.getText());
         
-        int enterRating = 0;
-        do{
-        System.out.println("Enter your rating(1-5): ");
+        System.out.println(enterRating);
         
-        enterRating = 0; //fixthis
-        }while(!(enterRating>0) || !(enterRating<6));
                     
                 query = "call rating('" + topicName + "','" + enterRating + "')";
                 
@@ -267,13 +272,10 @@ public class FXMLController implements Initializable {
         
         
         
-            String keepAdding = "yes";
-            while (keepAdding.equals("yes")){
-                System.out.println("Topic: ");
+            
               
-                String addTopic = "fix this"; //fixthis
+                String addTopic = topic.getText(); //fixthis
                 String addMessageBody = "";
-                String addPostDate = "";
                 
                 DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                 Date date = new Date();
@@ -282,15 +284,14 @@ public class FXMLController implements Initializable {
                 
                 do{
                 
-                System.out.println("Message: ");
-                addMessageBody = "fix this"; //fixthis
+                addMessageBody = newMessage.getText();
                 
                 if(addMessageBody.length()>301){
-                    System.err.println("\n\nMessage body must be less than 300 characters\n\n");
+                    alertLabel.setText("Message body must be less than 300 characters");
                 }else{
                     
                 query = "call messaging('" + currentUser + "','" + dateFormat.format(date) + "','" + addTopic + "','" + addMessageBody + "')";
-                
+                alertLabel.setText("Message added");
                 }
                 
                 }while(addMessageBody.length() > 301);
@@ -318,7 +319,7 @@ public class FXMLController implements Initializable {
                 
                 
       
-    }
+    
     }
 
     @FXML
@@ -326,23 +327,15 @@ public class FXMLController implements Initializable {
         
         
           
-        String keepGoing = "yes";
-        String addMessage = "no";
-        String replyMessage = "no";
-        String rateMessage = "no";
-        String userName = "";
+       
+        String userName = this.userNameLogin.getText();
         
-        
+        System.out.println("username");
         Statement stmt = null;
         Statement stmt2 = null;
         Statement stmt3 = null;
         ResultSet rs = null;
         ResultSet rs2 = null;
-        String fName ="";
-        String lName = "";
-        
-        System.out.println("What is your user name? (if you don't have one enter the one you want)");
-        userName = "fix this"; //fixthis
         
         String query4 = "call getUser('" + userName + "')";
         String query5 = "";
@@ -359,19 +352,14 @@ public class FXMLController implements Initializable {
                             
                            currentUser = rs.getInt("userID");
                             
-                            
+                            System.out.println("your logged in");
 			}else{
                             
-                            query5 = "call addUser('" + fName + "', '" + lName + "', '" + userName + "')";
-                            stmt2.executeUpdate(query5);
-                            rs2  = stmt3.executeQuery(query4);
-                            if (rs2.next()) {
-                            
-                            currentUser = rs2.getInt("userID");
-                            
+                            //this is where you can make hidden field visable 
+                            System.out.println("user not registered");
                             
                             }
-                        }
+                        
 			
 			
 			}
@@ -393,35 +381,21 @@ public class FXMLController implements Initializable {
     @FXML
     private void refresh(ActionEvent event) {
         
-            String listChoice;   
+            RadioButton lc = (RadioButton) sorting.getSelectedToggle();
+            String listChoice = String.valueOf(Character.toLowerCase(lc.getText().charAt(0)));
+            System.out.println(listChoice);
         
-            listChoice = "fix this"; //fixthis
-            int marker = 9;
             
             
-            printView(con,listChoice);
-            
-            
-            System.out.println("\n\n\nSelect from the following:\n"
-                    + "1. RePrint Messages\n2. New Message\n3. Reply to a Message"
-                    + "\n4. Rate a message\n5. Delete a Message\n6. End Program");
-            
-            marker = 0; //fixthis
-            
-            if(marker < 7 || marker>0){
-            
-               System.out.println("How you would like to organize and view these messages?");
-            System.out.println("List by Topic(T)    List by User(U)    List by Posting Date(D)");
-            listChoice = "fix this";  //fixthis
             printView(con,listChoice);
            
             
             
                       
-        }
+        
     }
     
-    public static void printView(Connection con, String listChoice)
+    public void printView(Connection con, String listChoice)
     {
         
         Statement stmt = null;
@@ -433,6 +407,8 @@ public class FXMLController implements Initializable {
         String query ="";
         String query2 ="";
         String query3 ="";
+        String output = "";
+        
         
         if (listChoice.equalsIgnoreCase("t")){
             
@@ -452,13 +428,14 @@ public class FXMLController implements Initializable {
                         stmt3 = con.createStatement();
 			
 			rs  = stmt.executeQuery(query);
-				
+			output = "";	
 			System.out.println("\n\nMessages:");
 			while (rs.next()) {
                             query2 = "call avgRatings('"+ rs.getInt("messageID") + "')";
                             query3 = "call callReplies('"+ rs.getInt("messageID") + "')";
                             rs2  = stmt2.executeQuery(query2);
                             rs3  = stmt3.executeQuery(query3);
+                            
                             
                             String rating = "";
                             if(rs2.next()){
@@ -468,14 +445,70 @@ public class FXMLController implements Initializable {
                             if(rating.equalsIgnoreCase("0")){
                             rating = "No Ratings";}
                            
-                            System.out.println("\n\nMessage Id: " + rs.getInt("messageID") + "\nMessage: " + rs.getString("message") + "\nTopic: " + rs.getString("topic") +  
-                                    "\nUsername: " + rs.getString("userName") + "\nPost Date: " + rs.getDate("postDate") + "\nRating: " + rating);
+                            output = output + "\n\nMessage Id: " + rs.getInt("messageID") + "\nMessage: " + rs.getString("message") + "\nTopic: " + rs.getString("topic") +  
+                                    "\nUsername: " + rs.getString("userName") + "\nPost Date: " + rs.getDate("postDate") + "\nRating: " + rating;
                             while (rs3.next()) {
-                            System.out.println("\nReplies: " + rs3.getString("reply") +  "\nUsername: " + rs3.getString("userName"));
+                            output = output + "\nReplies: " + rs3.getString("reply") +  "\nUsername: " + rs3.getString("userName");
                             }
                             
                             
 			}
+                        
+			}
+       
+        
+	
+	
+	catch (SQLException e)
+	{
+		e.printStackTrace();
+		System.out.println("SQL Exception");				
+	}
+	
+	finally 
+	{
+	  
+	}
+        
+        setText(output);
+    
+    }
+
+    @FXML
+    private void registerUser(ActionEvent event) {
+        
+        String userName = this.userNameLogin.getText();
+        
+        
+        Statement stmt2 = null;
+        Statement stmt3 = null;
+        ResultSet rs = null;
+        ResultSet rs2 = null;
+        String fName = firstName.getText();
+        String lName = lastName.getText();
+        
+        String query5 = "";
+        String query4 = "call getUser('" + userName + "')";
+        
+        try
+	{
+			
+                        stmt2 = con.createStatement();
+                        stmt3 = con.createStatement();
+			
+			
+                        
+                            
+                            query5 = "call addUser('" + fName + "', '" + lName + "', '" + userName + "')";
+                            stmt2.executeUpdate(query5);
+                            rs2  = stmt3.executeQuery(query4);
+                            if (rs2.next()) {
+                            
+                            currentUser = rs2.getInt("userID");
+                                System.out.println("new user created");
+                            
+                            
+                        }
 			
 			
 			}
@@ -491,10 +524,18 @@ public class FXMLController implements Initializable {
 	{
 	  
 	}
+        
+        
+        
+        
+    }
     
     
-    
-    
+    public void setText(String value){
+        
+        Label messagesPrintBox = new Label();
+        messagesPrintBox.setText(value);
+        sp.setContent(messagesPrintBox);
     }
     
 }
