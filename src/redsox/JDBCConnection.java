@@ -135,11 +135,11 @@ public static Connection connect(int which)
 	return connection;
 }
 
-public static Connection connect(int which, String user, String pass)
+public static Connection connect(int which, String user, String pass,String database)
 {
 	Connection connection=null;
 	String driver = getDriver(which);
-	String url = getURL(which);
+	String url = "jdbc:mysql://localhost:3306/"+ database;
 	System.out.println(driver);
 	System.out.println(url);
 	try 
