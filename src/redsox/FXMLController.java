@@ -78,7 +78,9 @@ public class FXMLController implements Initializable {
     private TextField lastName;
     @FXML
     private RadioButton sortDate;
-            
+    @FXML
+    private javafx.scene.control.Button closeButton;
+    
    Connection con =null;
    int currentUser = 0;
    
@@ -530,6 +532,14 @@ public class FXMLController implements Initializable {
         
     }
     
+    @FXML
+    private void closeButtonAction(ActionEvent event)
+    {
+        //get a handle to the state Stage
+       Stage stage = (Stage)closeButton.getScene().getWindow();
+       stage.close();
+        
+    } // end method closeButtonAction
     
     public void setText(String value){
         
